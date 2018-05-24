@@ -1,0 +1,41 @@
+```{r}
+library(data.table)
+library(dplyr)
+library(ggplot2)
+library(stringr)
+library(DT)
+library(tidyr)
+library(corrplot)
+library(leaflet)
+library(lubridate)
+
+data <- fread('./Data/merged_2016.csv')
+
+data <- data %>% mutate(abs_logerror = abs(logerror))
+```
+
+# Bivariate Analysis
+
+## Abs Logerror & latitude
+```{r}
+data %>% ggplot(aes(x=latitude,y=abs_logerror))+geom_smooth(color="blue")+theme_bw()
+```
+
+## Abs Logerror & longitude
+```{r}
+data %>% ggplot(aes(x=longitude,y=abs_logerror))+geom_smooth(color="blue")+theme_bw()
+```
+
+## Abs Logerror & builtyear
+```{r}
+data %>% ggplot(aes(x=yearbuilt,y=abs_logerror))+geom_smooth(color="blue")+theme_bw()
+```
+
+This the area where Zestimate both under and over predict.
+```{r}
+leaflet() %>% 
+  addTiles() %>% 
+  fitBounds(-118.5,33.8,-118.25,34.15) %>% 
+  addRectangles(-118.5,33.8,-118.25,34.15) %>% 
+  addMiniMap()
+```
